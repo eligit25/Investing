@@ -1,0 +1,350 @@
+# Hotels to scrape. One entry per hotel.
+#
+#   id          short unique key (used in the database)
+#   micromarket id from micromarkets.yaml
+#   company     listed company / operator the hotel gives a read on
+#   source      booking engine adapter: synxis | reztrip | taj | marriott | hyatt
+#   params      engine-specific identifiers (see each adapter's docstring)
+#   rooms       standard rooms. A = entry category, B = next category up.
+#               codes: exact room codes; names: case-insensitive regexes.
+#               Omit to auto-pick the cheapest (A) and second-cheapest (B) rooms each day.
+#               `python -m hps rooms <id>` prints the room list and a suggested block.
+#   verified    false = not yet confirmed working; skipped by `run` unless
+#               --include-unverified or --hotel is given. Taj/Marriott/Hyatt
+#               start unverified because they block cloud servers; confirm them
+#               on your own computer with `python -m hps test-site <source>`.
+#
+# SynXis chains:  ITC  https://res.itchotels.com chain 26676
+#                 Leela https://reservations.theleela.com chain 23514
+#                 Oberoi https://res.oberoihotels.com chain 24188
+# List a chain's hotel ids:  python -m hps discover synxis <base_url> <chain>
+
+hotels:
+  # ------------------------------------------------------------ Mumbai - Airport
+  - id: itc-maratha
+    name: ITC Maratha, a Luxury Collection Hotel, Mumbai
+    micromarket: mum-airport
+    company: ITC Hotels
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.itchotels.com", chain: 26676, hotel: 30170}
+    rooms:
+      A: {codes: [TWDL]}   # Towers Double
+      B: {codes: [I1DL]}   # ITC One Double
+
+  - id: leela-mumbai
+    name: The Leela Mumbai
+    micromarket: mum-airport
+    company: Schloss Bangalore (The Leela)
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://reservations.theleela.com", chain: 23514, hotel: 3158}
+    verified: false   # SynXis works, but Leela's site blocked repeat visits from a cloud server
+
+  - id: aurika-mumbai-airport
+    name: Aurika, Mumbai International Airport
+    micromarket: mum-airport
+    company: Lemon Tree Hotels
+    segment: upscale
+    source: reztrip
+    params: {code: BOMAUR}
+    rooms:
+      A: {names: ['^Deluxe']}   # Deluxe King/Twin (pool view)
+      B: {names: ['^Premium (King|Twin) Room']}
+
+  - id: ltp-mumbai-airport
+    name: Lemon Tree Premier, Mumbai International Airport
+    micromarket: mum-airport
+    company: Lemon Tree Hotels
+    segment: upper midscale
+    source: reztrip
+    params: {code: BOMLTP}
+    rooms:
+      A: {names: ['^Deluxe Room']}
+      B: {names: ['^Executive Room']}
+
+  - id: jw-mumbai-sahar
+    name: JW Marriott Mumbai Sahar
+    micromarket: mum-airport
+    company: Chalet Hotels (Marriott-operated)
+    segment: luxury
+    source: marriott
+    params: {code: BOMSA}   # verify: marriott.com/.../hotels/<code>-jw-marriott-mumbai-sahar
+    verified: false
+
+  - id: taj-santacruz
+    name: Taj Santacruz, Mumbai
+    micromarket: mum-airport
+    company: Indian Hotels (IHCL)
+    segment: luxury
+    source: taj
+    params: {hotel_page: "https://www.tajhotels.com/en-in/hotels/taj-santacruz-mumbai"}
+    verified: false
+
+  # ------------------------------------------------------------ Mumbai - South / BKC
+  - id: oberoi-mumbai
+    name: The Oberoi, Mumbai
+    micromarket: mum-south-bkc
+    company: EIH (Oberoi)
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5270}
+    rooms:
+      A: {codes: [SPR]}   # Premier Room
+      B: {codes: [BVR]}   # Bay View Room
+
+  - id: trident-nariman-point
+    name: Trident, Nariman Point, Mumbai
+    micromarket: mum-south-bkc
+    company: EIH (Oberoi)
+    segment: upscale
+    source: synxis
+    params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5271}
+    rooms:
+      A: {codes: [OER, HER]}   # Executive Ocean / Harbour View
+      B: {codes: [TCRH, TCRO]}   # Trident Club rooms
+
+  - id: trident-bkc
+    name: Trident, Bandra Kurla, Mumbai
+    micromarket: mum-south-bkc
+    company: EIH (Oberoi)
+    segment: upscale
+    source: synxis
+    params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5278}
+    rooms:
+      A: {codes: [SPRK, SPRT]}   # Premier Room King / Twin
+      B: {codes: [TCRK, TCRT]}   # Trident Club room
+
+  - id: itc-grand-central
+    name: ITC Grand Central, a Luxury Collection Hotel, Mumbai
+    micromarket: mum-south-bkc
+    company: ITC Hotels
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.itchotels.com", chain: 26676, hotel: 30163}
+    rooms:
+      A: {codes: [TWDL, TWTW]}   # Towers Double / Twin
+      B: {codes: [I1DL, EEDL, SLUX]}   # ITC One / Exec Club / Luxury Suite (next category on sale)
+
+  - id: lt-kalina-bkc
+    name: Lemon Tree Hotel, Kalina BKC, Mumbai
+    micromarket: mum-south-bkc
+    company: Lemon Tree Hotels
+    segment: midscale
+    source: reztrip
+    params: {code: BOMLTK}
+    rooms:
+      A: {names: ['^Deluxe']}
+      B: {names: ['^Executive Room']}
+
+  - id: taj-mahal-palace
+    name: The Taj Mahal Palace, Mumbai
+    micromarket: mum-south-bkc
+    company: Indian Hotels (IHCL)
+    segment: luxury
+    source: taj
+    params: {hotel_page: "https://www.tajhotels.com/en-in/hotels/taj-mahal-palace-mumbai"}
+    verified: false
+
+  - id: grand-hyatt-mumbai
+    name: Grand Hyatt Mumbai
+    micromarket: mum-south-bkc
+    company: Juniper Hotels (Hyatt-operated)
+    segment: luxury
+    source: hyatt
+    params: {code: bomgh}   # verify: hyatt.com/.../<code>-grand-hyatt-mumbai...
+    verified: false
+
+  # ------------------------------------------------------------ Delhi - Central
+  - id: itc-maurya
+    name: ITC Maurya, a Luxury Collection Hotel, New Delhi
+    micromarket: del-central
+    company: ITC Hotels
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.itchotels.com", chain: 26676, hotel: 30160}
+    rooms:
+      A: {codes: [EEDL]}   # Executive Club Exclusive Double
+      B: {codes: [TWDL, TWTW]}   # Towers Double / Twin
+
+  - id: oberoi-new-delhi
+    name: The Oberoi, New Delhi
+    micromarket: del-central
+    company: EIH (Oberoi)
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5280}
+    rooms:
+      A: {codes: [SLR]}   # Luxury Room (shown as 'King')
+      B: {codes: [SPR]}   # Premier Room
+
+  - id: leela-palace-delhi
+    name: The Leela Palace New Delhi
+    micromarket: del-central
+    company: Schloss Bangalore (The Leela)
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://reservations.theleela.com", chain: 23514, hotel: 3151}
+    verified: false   # SynXis works, but Leela's site blocked repeat visits from a cloud server
+
+  - id: taj-mahal-delhi
+    name: Taj Mahal, New Delhi
+    micromarket: del-central
+    company: Indian Hotels (IHCL)
+    segment: luxury
+    source: taj
+    params: {hotel_page: "https://www.tajhotels.com/en-in/hotels/taj-mahal-new-delhi"}
+    verified: false
+
+  - id: taj-palace-delhi
+    name: Taj Palace, New Delhi
+    micromarket: del-central
+    company: Indian Hotels (IHCL)
+    segment: luxury
+    source: taj
+    params: {hotel_page: "https://www.tajhotels.com/en-in/hotels/taj-palace-new-delhi"}
+    verified: false
+
+  # ------------------------------------------------------------ Delhi NCR - Aerocity / Gurugram
+  - id: oberoi-gurgaon
+    name: The Oberoi, Gurgaon
+    micromarket: del-aerocity-ggn
+    company: EIH (Oberoi)
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5272}
+    rooms:
+      A: {codes: [SLR]}   # Luxury Room
+      B: {codes: [SPR, SPRT]}   # Premier King / Twin
+
+  - id: trident-gurgaon
+    name: Trident, Gurgaon
+    micromarket: del-aerocity-ggn
+    company: EIH (Oberoi)
+    segment: upscale
+    source: synxis
+    params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5281}
+    rooms:
+      A: {codes: [SDRG]}   # Deluxe Garden View
+      B: {codes: [SDRP]}   # Deluxe Pool View
+
+  - id: leela-ambience-gurugram
+    name: The Leela Ambience Gurugram Hotel & Residences
+    micromarket: del-aerocity-ggn
+    company: Schloss Bangalore (The Leela)
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://reservations.theleela.com", chain: 23514, hotel: 3145}
+    verified: false   # SynXis works, but Leela's site blocked repeat visits from a cloud server
+
+  - id: ltp-delhi-airport
+    name: Lemon Tree Premier, Delhi Airport (Aerocity)
+    micromarket: del-aerocity-ggn
+    company: Lemon Tree Hotels
+    segment: upper midscale
+    source: reztrip
+    params: {code: DELAER}
+    rooms:
+      A: {names: ['^Business Room']}
+      B: {names: ['^Executive King Room']}
+
+  - id: ltp-city-center-gurugram
+    name: Lemon Tree Premier, City Center, Gurugram
+    micromarket: del-aerocity-ggn
+    company: Lemon Tree Hotels
+    segment: upper midscale
+    source: reztrip
+    params: {code: DEL714}
+    rooms:
+      A: {names: ['^Deluxe Room']}
+      B: {names: ['^Executive Room']}
+
+  - id: jw-aerocity
+    name: JW Marriott Hotel New Delhi Aerocity
+    micromarket: del-aerocity-ggn
+    company: Marriott-operated
+    segment: luxury
+    source: marriott
+    params: {code: DELJW}   # verify
+    verified: false
+
+  - id: andaz-delhi
+    name: Andaz Delhi (Aerocity)
+    micromarket: del-aerocity-ggn
+    company: Juniper Hotels (Hyatt-operated)
+    segment: luxury
+    source: hyatt
+    params: {code: delaz}   # verify
+    verified: false
+
+  # ------------------------------------------------------------ Bengaluru - CBD
+  - id: itc-windsor
+    name: ITC Windsor, a Luxury Collection Hotel, Bengaluru
+    micromarket: blr-cbd
+    company: ITC Hotels
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.itchotels.com", chain: 26676, hotel: 30165}
+    rooms:
+      A: {codes: [TWDL]}   # Towers Double
+      B: {codes: [MCDN]}   # Manor Double
+
+  - id: itc-gardenia
+    name: ITC Gardenia, a Luxury Collection Hotel, Bengaluru
+    micromarket: blr-cbd
+    company: ITC Hotels
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.itchotels.com", chain: 26676, hotel: 30167}
+    rooms:
+      A: {codes: [TWDL]}   # Towers Double
+      B: {codes: [TEDL]}   # Towers With Balcony Double
+
+  - id: oberoi-bengaluru
+    name: The Oberoi, Bengaluru
+    micromarket: blr-cbd
+    company: EIH (Oberoi)
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5269}
+    rooms:
+      A: {codes: [SLR]}   # Luxury Room
+      B: {codes: [SER]}   # Executive Room
+
+  - id: leela-palace-bengaluru
+    name: The Leela Palace Bengaluru
+    micromarket: blr-cbd
+    company: Schloss Bangalore (The Leela)
+    segment: luxury
+    source: synxis
+    params: {base_url: "https://reservations.theleela.com", chain: 23514, hotel: 3153}
+    verified: false   # SynXis works, but Leela's site blocked repeat visits from a cloud server
+
+  - id: ltp-bengaluru-city-center
+    name: Lemon Tree Premier, Bengaluru (city centre)
+    micromarket: blr-cbd
+    company: Lemon Tree Hotels
+    segment: upper midscale
+    source: reztrip
+    params: {code: BLRLTH}
+    rooms:
+      A: {names: ['^Deluxe Room']}
+      B: {names: ['^Executive Room']}
+
+  - id: taj-west-end
+    name: Taj West End, Bengaluru
+    micromarket: blr-cbd
+    company: Indian Hotels (IHCL)
+    segment: luxury
+    source: taj
+    params: {hotel_page: "https://www.tajhotels.com/en-in/hotels/taj-west-end-bengaluru"}
+    verified: false
+
+  - id: jw-bengaluru
+    name: JW Marriott Hotel Bengaluru
+    micromarket: blr-cbd
+    company: Marriott-operated
+    segment: luxury
+    source: marriott
+    params: {code: BLRJW}   # verify
+    verified: false

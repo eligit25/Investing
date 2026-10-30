@@ -1,0 +1,67 @@
+# Global settings for the daily hotel price scrape.
+
+stay:
+  nights: 1
+  adults: 2
+  currency: INR
+
+# Forward-looking horizons, measured from the scrape date.
+# every_n_days lets far horizons run less often (1 = daily). Prices 3-6 months
+# out barely move day to day, so 2 halves the load with little information lost.
+horizons:
+  - {label: 1w, days: 7,   every_n_days: 1}
+  - {label: 1m, days: 30,  every_n_days: 1}
+  - {label: 3m, days: 90,  every_n_days: 1}
+  - {label: 6m, days: 180, every_n_days: 1}
+
+# How a horizon becomes a check-in date:
+#   dow_anchored - for each anchor weekday, the first such day on/after today+days.
+#                  Gives a clean weekday series and a clean weekend series
+#                  (doubles the number of searches).
+#   fixed_offset - check-in = today + days exactly (weekday drifts over time).
+checkin_mode: dow_anchored
+anchor_days: [tue, sat]
+
+# Which offer becomes the "standard" price for a room.
+rate_policy:
+  exclude_member_rates: true      # loyalty / sign-in rates
+  require_refundable: true        # skip non-refundable / advance-purchase rates
+  # Rates whose name matches any of these (case-insensitive regex) are ignored
+  # when picking the standard price. They are still stored in the offers table.
+  exclude_rate_patterns:
+    - package
+    - reward
+    - points
+    - celebrat
+    - honeymoon
+    - romance
+    - staycation
+    - suite experience
+    - beyond the suite
+    - elevate
+    - day use
+  # Rooms matching these are never auto-assigned as A/B (still stored).
+  exclude_room_patterns:
+    - assigned at check-?in
+    - run of (the )?house
+
+browser:
+  headless: true
+  # "chromium" uses Playwright's bundled browser. On your own computer, "chrome"
+  # (your installed Google Chrome) behaves most like a normal visit.
+  channel: chromium
+  # Keep cookies between runs, like a normal browser profile. Relative to this folder.
+  user_data_dir: data/browser_profile
+  locale: en-IN
+  timezone: Asia/Kolkata
+  page_timeout_s: 60
+  # Polite pacing between page loads (random in this range).
+  delay_s: [6, 15]
+  # Stop hitting a chain for the rest of the run after this many consecutive blocks.
+  max_consecutive_blocks: 3
+
+storage:
+  db_path: data/hotel_prices.sqlite
+  raw_dir: data/raw          # gzipped raw responses, so history can be re-parsed
+  export_dir: exports
+  report_dir: data/reports

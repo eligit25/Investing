@@ -1,0 +1,22 @@
+# Micromarkets the analysis is segmented by. Add more freely; hotels reference them by id.
+micromarkets:
+  - id: mum-airport
+    name: Mumbai - Airport / Andheri / Santacruz
+    city: Mumbai
+    notes: Corporate + airport demand; Sahar, Andheri East, Santacruz, Juhu edge.
+  - id: mum-south-bkc
+    name: Mumbai - South Mumbai, Lower Parel and BKC
+    city: Mumbai
+    notes: Nariman Point / Colaba / Parel heritage and CBD hotels, BKC office district.
+  - id: del-central
+    name: Delhi - Central (Lutyens, Chanakyapuri, Diplomatic Enclave)
+    city: New Delhi
+    notes: Luxury and government / diplomatic demand.
+  - id: del-aerocity-ggn
+    name: Delhi NCR - Aerocity and Gurugram
+    city: New Delhi / Gurugram
+    notes: Airport hospitality district plus the Gurugram office belt (Cyber City, Golf Course Rd).
+  - id: blr-cbd
+    name: Bengaluru - CBD and Old Airport Road
+    city: Bengaluru
+    notes: MG Road / Vittal Mallya Rd / Ulsoor / HAL Old Airport Road.
