@@ -8,7 +8,9 @@
 #   rooms       standard rooms. A = entry category, B = next category up.
 #               codes: exact room codes; names: case-insensitive regexes.
 #               Omit to auto-pick the cheapest (A) and second-cheapest (B) rooms each day.
-#               `python -m hps rooms <id>` prints the room list and a suggested block.
+#               `python -m hps rooms <id>` prints the room list over 3 dates and a suggested block.
+#               Rule used here: A = lowest room family on sale most of the time (few gaps),
+#               B = next family up. Rarer entry rooms still feed LOWEST and the sold-out signal.
 #   verified    false = not yet confirmed working; skipped by `run` unless
 #               --include-unverified or --hotel is given. Taj/Marriott/Hyatt
 #               start unverified because they block cloud servers; confirm them
@@ -49,8 +51,8 @@ hotels:
     source: reztrip
     params: {code: BOMAUR}
     rooms:
-      A: {names: ['^Deluxe']}   # Deluxe King/Twin (pool view)
-      B: {names: ['^Premium (King|Twin) Room']}
+      A: {codes: [DLXK]}   # Deluxe King Room
+      B: {codes: [PRMK, PRMT]}   # Premium King / Twin
 
   - id: ltp-mumbai-airport
     name: Lemon Tree Premier, Mumbai International Airport
@@ -90,8 +92,8 @@ hotels:
     source: synxis
     params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5270}
     rooms:
-      A: {codes: [SPR]}   # Premier Room
-      B: {codes: [BVR]}   # Bay View Room
+      A: {codes: [SLR, SLRT]}   # Luxury room (shown as King / Twin)
+      B: {codes: [SPR]}   # Premier Room
 
   - id: trident-nariman-point
     name: Trident, Nariman Point, Mumbai
@@ -101,7 +103,7 @@ hotels:
     source: synxis
     params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5271}
     rooms:
-      A: {codes: [OER, HER]}   # Executive Ocean / Harbour View
+      A: {codes: [POR, PORT]}   # Premier Ocean View (shown as King / Twin)
       B: {codes: [TCRH, TCRO]}   # Trident Club rooms
 
   - id: trident-bkc
@@ -112,8 +114,8 @@ hotels:
     source: synxis
     params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5278}
     rooms:
-      A: {codes: [SPRK, SPRT]}   # Premier Room King / Twin
-      B: {codes: [TCRK, TCRT]}   # Trident Club room
+      A: {codes: [PDRK, PDRT]}   # Pool View Room King / Twin
+      B: {codes: [SPRK, SPRT]}   # Premier Room King / Twin
 
   - id: itc-grand-central
     name: ITC Grand Central, a Luxury Collection Hotel, Mumbai
@@ -124,7 +126,7 @@ hotels:
     params: {base_url: "https://res.itchotels.com", chain: 26676, hotel: 30163}
     rooms:
       A: {codes: [TWDL, TWTW]}   # Towers Double / Twin
-      B: {codes: [I1DL, EEDL, SLUX]}   # ITC One / Exec Club / Luxury Suite (next category on sale)
+      B: {codes: [I1DL]}   # ITC One Double
 
   - id: lt-kalina-bkc
     name: Lemon Tree Hotel, Kalina BKC, Mumbai
@@ -134,7 +136,7 @@ hotels:
     source: reztrip
     params: {code: BOMLTK}
     rooms:
-      A: {names: ['^Deluxe']}
+      A: {names: ['^Superior']}
       B: {names: ['^Executive Room']}
 
   - id: taj-mahal-palace
@@ -308,8 +310,8 @@ hotels:
     source: synxis
     params: {base_url: "https://res.oberoihotels.com", chain: 24188, hotel: 5269}
     rooms:
-      A: {codes: [SLR]}   # Luxury Room
-      B: {codes: [SER]}   # Executive Room
+      A: {codes: [SDR]}   # Deluxe Room with Private Balcony
+      B: {codes: [SLR]}   # Luxury Room with Private Balcony
 
   - id: leela-palace-bengaluru
     name: The Leela Palace Bengaluru
